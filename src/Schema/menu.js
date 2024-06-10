@@ -22,6 +22,10 @@ const menuSchema = Schema(
       ref: "User",
       required: [true, "Restaurant ID is required"],
     },
+    estimatedTime: {
+      type: Number,
+      required: [true, "Estimated time is required"],
+    },
     photo: {
       type: String,
       //   required: [true, "Menu item photo is required"],

@@ -1,7 +1,7 @@
 import { Menu } from "../Models/model.js";
 
 export const createMenu = async (req, res) => {
-  const { name, description, price, category } = req.body;
+  const { name, description, price, category, estimatedTime } = req.body;
   const restaurantId = req._id;
   const photo = `localhost:8000/${req.file.filename}`;
 
@@ -12,6 +12,7 @@ export const createMenu = async (req, res) => {
       price,
       category,
       restaurantId,
+      estimatedTime,
       photo,
     };
     let result = await Menu.create(menuData);
