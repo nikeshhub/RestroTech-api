@@ -43,15 +43,17 @@ export const makeOrder = async (req, res) => {
         }
         const result = await Order.create({
           items,
-          tableNumber: validTable.id,
+          tableNumber: validTable._id,
           restaurantId,
           totalPrice,
         });
-        await Table.findOneAndUpdate(
-          { id: isValidOrder.id },
+        console.log("validTable._id", validTable._id);
+        const updatedTable = await Table.findOneAndUpdate(
+          { id: validTable._id },
           { status: "occupied" },
           { new: true }
         );
+        console.log("Updated Table", updatedTable);
         res.json({
           success: true,
           message: "Order created successfully",
@@ -75,7 +77,9 @@ export const getOrders = async (req, res) => {
   try {
     const restaurantId = req._id;
     console.log(restaurantId);
-    const result = await Order.find({ restaurantId });
+    const result = await Order.find({ restaurantId })
+      .populate("tableNumber")
+      .populate("items.menuItem");
     console.log(result);
     res.json({
       success: true,
