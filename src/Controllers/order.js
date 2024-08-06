@@ -9,7 +9,7 @@ export const makeOrder = async (req, res) => {
       number: tableNumber,
       restaurantId,
     });
-    console.log(":::::::::::::VALID TABLE::::::::::", validTable._id);
+
     if (validTable) {
       if (validTable.status === "available") {
         const menuItems = await Menu.find({ restaurantId });
@@ -39,8 +39,12 @@ export const makeOrder = async (req, res) => {
         console.log(totalPrice);
 
         if (!isValidOrder) {
-          throw new Error("Menu item doesnt exists");
+          return res.status(400).json({
+            success: false,
+            message: "Menu item doesn't exist",
+          });
         }
+
         const result = await Order.create({
           items,
           tableNumber: validTable._id,
@@ -48,25 +52,33 @@ export const makeOrder = async (req, res) => {
           totalPrice,
         });
         console.log("validTable._id", validTable._id);
+
         const updatedTable = await Table.findOneAndUpdate(
-          { id: validTable._id },
+          { _id: validTable._id },
           { status: "occupied" },
           { new: true }
         );
         console.log("Updated Table", updatedTable);
-        res.json({
+
+        return res.status(201).json({
           success: true,
           message: "Order created successfully",
           data: result,
         });
       } else {
-        throw new Error("Table is occupied");
+        return res.status(409).json({
+          success: false,
+          message: "Table is occupied",
+        });
       }
     } else {
-      throw new Error("Table number doesnt exists");
+      return res.status(404).json({
+        success: false,
+        message: "Table number doesn't exist",
+      });
     }
   } catch (error) {
-    res.json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
