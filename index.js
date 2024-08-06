@@ -7,7 +7,7 @@ import menuRouter from "./src/Routers/menu.js";
 import tableRouter from "./src/Routers/table.js";
 import orderRouter from "./src/Routers/order.js";
 
-const app = express();
+export const app = express();
 app.use(express.json());
 app.use(
   cors({
@@ -23,8 +23,10 @@ app.use("/table", tableRouter);
 app.use("/order", orderRouter);
 app.use(express.static("./public"));
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
+}
 
 connectToMongoDb();
