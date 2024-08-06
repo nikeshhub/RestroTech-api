@@ -36,7 +36,7 @@ const orderSchema = Schema(
       default: "pending",
     },
   },
-  { timeStamps: true }
+  { timestamps: true }
 );
 
 export default orderSchema;
